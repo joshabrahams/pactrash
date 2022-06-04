@@ -3,8 +3,8 @@ import sys
 from Button import *
 from settings import *
 
-
 pygame.init()
+vec = pygame.math.Vector2
 
 screen = pygame.display.set_mode((610, 670))
 pygame.display.set_caption("PacMan")
@@ -61,6 +61,27 @@ class App:
         self.screen = pygame.display.set_mode((width, height))
         self.maze = pygame.image.load('assets/maze.png')
         self.maze = pygame.transform.scale(self.maze, (maze_width, maze_height))
+        self.coins = []
+        self.walls = []
+        self.cell_width = maze_width // COLS
+        self.cell_height = maze_height // ROWS
+        self.e_pos = []
+        self.p_pos = 0
+
+        with open("assets/walls.txt", 'r') as file:
+            for yidx, line in enumerate(file):
+                for xidx, char in enumerate(line):
+                    if char == "1":
+                        self.walls.append(vec(xidx, yidx))
+                    elif char == "C":
+                        self.coins.append((vec(xidx, yidx)))
+                    elif char == "P":
+                        self.p_pos = [xidx, yidx]
+                    elif char in ["2", "3", "4", "5"]:
+                        self.e_pos.append([xidx, yidx])
+                    elif char == "B":
+                        pygame.draw.rect(self.maze, Black, (
+                            xidx * self.cell_width, yidx * self.cell_height, self.cell_width, self.cell_height))
 
     def run(self):
         while self.running:
@@ -113,5 +134,16 @@ class App:
     def playing_draw(self):
         self.screen.fill(Black)
         self.screen.blit(self.maze, (Gap // 2, Gap // 2))
+        self.draw_coins()
 
         pygame.display.update()
+
+    def draw_coins(self):
+        x = 0
+        for coin in self.coins:
+            x = x + 1
+            pygame.draw.circle(self.screen, (124, 123, 7), (
+                int(coin.x * self.cell_width) + self.cell_width // 2 + Gap // 2,
+                int(coin.y * self.cell_height) + self.cell_height // 2 + Gap // 2), 5)
+
+        assert x == 287
