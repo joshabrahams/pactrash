@@ -1,6 +1,7 @@
 import pygame
 import sys
 from Button import *
+from settings import *
 
 
 pygame.init()
@@ -43,7 +44,7 @@ def menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst
         if event.type == pygame.MOUSEBUTTONDOWN:
             if play_button.check_for_input(menu_mouse_pos):
                 self.state = 'playing'
-                # self.play()
+                self.play()
             if instructions_button.check_for_input(menu_mouse_pos):
                 self.instructions_menu()
                 # add instructions
@@ -56,6 +57,10 @@ class App:
     def __init__(self):
         self.running = True
         self.state = 'start'
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode((width, height))
+        self.maze = pygame.image.load('assets/maze.png')
+        self.maze = pygame.transform.scale(self.maze, (maze_width, maze_height))
 
     def run(self):
         while self.running:
@@ -93,3 +98,20 @@ class App:
             menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst_btn_text, quit_x, quit_y)
 
             pygame.display.update()
+
+    def play(self):
+        while self.running:
+            if self.state == 'playing':
+                self.playing_draw()
+            else:
+                self.running = False
+
+            self.clock.tick(FPS)
+        pygame.quit()
+        sys.exit()
+
+    def playing_draw(self):
+        self.screen.fill(Black)
+        self.screen.blit(self.maze, (Gap // 2, Gap // 2))
+
+        pygame.display.update()
