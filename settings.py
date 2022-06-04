@@ -12,3 +12,6 @@ Black = (0, 0, 0)
 Red = (208, 22, 22)
 Grey = (107, 107, 107)
 White = (255, 255, 255)
+
+# player settings
+Player_Colour = (255, 255, 0)

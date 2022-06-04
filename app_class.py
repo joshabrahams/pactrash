@@ -1,7 +1,6 @@
-import pygame
 import sys
 from Button import *
-from settings import *
+from Player import *
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -83,6 +82,8 @@ class App:
                         pygame.draw.rect(self.maze, Black, (
                             xidx * self.cell_width, yidx * self.cell_height, self.cell_width, self.cell_height))
 
+        self.player = Player(self, vec(self.p_pos))
+
     def run(self):
         while self.running:
             if self.state == 'start':
@@ -135,6 +136,7 @@ class App:
         self.screen.fill(Black)
         self.screen.blit(self.maze, (Gap // 2, Gap // 2))
         self.draw_coins()
+        self.player.draw()
 
         pygame.display.update()
 
