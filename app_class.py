@@ -187,6 +187,8 @@ class App:
 
     def playing_update(self):
         self.player.update()
+        for enemy in self.enemies:
+            enemy.update()
 
     def make_enemies(self):
         for idx, pos in enumerate(self.e_pos):
