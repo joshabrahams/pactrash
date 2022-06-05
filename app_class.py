@@ -125,6 +125,8 @@ class App:
         while self.running:
             if self.state == 'playing':
                 self.playing_draw()
+                self.playing_events()
+                self.playing_update()
             else:
                 self.running = False
 
@@ -149,3 +151,21 @@ class App:
                 int(coin.y * self.cell_height) + self.cell_height // 2 + Gap // 2), 5)
 
         assert x == 287
+
+    # playing functions
+    def playing_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.player.move(vec(-1, 0))
+                if event.key == pygame.K_RIGHT:
+                    self.player.move(vec(1, 0))
+                if event.key == pygame.K_UP:
+                    self.player.move(vec(0, -1))
+                if event.key == pygame.K_DOWN:
+                    self.player.move(vec(0, 1))
+
+    def playing_update(self):
+        self.player.update()
