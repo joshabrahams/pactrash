@@ -150,7 +150,8 @@ class App:
                 int(coin.x * self.cell_width) + self.cell_width // 2 + Gap // 2,
                 int(coin.y * self.cell_height) + self.cell_height // 2 + Gap // 2), 5)
 
-        assert x == 287
+        if self.player.stored_direction is None and self.player.grid_pos == [1, 1]:
+            assert x == 287
 
     # playing functions
     def playing_events(self):

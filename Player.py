@@ -36,6 +36,9 @@ class Player:
         self.grid_pos[0] = (self.pix_pos[0] - Gap + self.app.cell_width // 2) // self.app.cell_width + 1
         self.grid_pos[1] = (self.pix_pos[1] - Gap + self.app.cell_height // 2) // self.app.cell_height + 1
 
+        if self.on_rubbish():
+            self.eat_rubbish()
+
         assert self.grid_pos == (
             self.grid_pos[0], self.grid_pos[1])  # check that the player sprite has moved to the correct position
 
@@ -56,3 +59,16 @@ class Player:
 
     def move(self, direction):
         self.stored_direction = direction
+
+    def on_rubbish(self):
+        if self.grid_pos in self.app.coins:
+            if int(self.pix_pos.x + Gap // 2) % self.app.cell_width == 0:
+                if self.direction == vec(1, 0) or self.direction == vec(-1, 0):
+                    return True
+            if int(self.pix_pos.y + Gap // 2) % self.app.cell_width == 0:
+                if self.direction == vec(0, 1) or self.direction == vec(0, -1):
+                    return True
+        return False
+
+    def eat_rubbish(self):
+        self.app.coins.remove(self.grid_pos)
