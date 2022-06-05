@@ -1,6 +1,7 @@
 import sys
 from Button import *
 from Player import *
+from Enemy import *
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -75,6 +76,7 @@ class App:
         self.cell_height = maze_height // ROWS
         self.e_pos = []
         self.p_pos = 0
+        self.enemies = []
 
         with open("assets/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
@@ -92,6 +94,7 @@ class App:
                             xidx * self.cell_width, yidx * self.cell_height, self.cell_width, self.cell_height))
 
         self.player = Player(self, vec(self.p_pos))
+        self.make_enemies()
 
     def run(self):
         while self.running:
@@ -151,6 +154,8 @@ class App:
         draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [130, 15], 18, White,
                   Start_Font)
         draw_text('HIGH SCORE: 0', self.screen, [width // 2 + 150, 15], 18, White, Start_Font)
+        for enemy in self.enemies:
+            enemy.draw()
 
         pygame.display.update()
 
@@ -182,3 +187,7 @@ class App:
 
     def playing_update(self):
         self.player.update()
+
+    def make_enemies(self):
+        for idx, pos in enumerate(self.e_pos):
+            self.enemies.append(Enemy(self, vec(pos), idx))
