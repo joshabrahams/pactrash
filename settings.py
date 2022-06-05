@@ -15,3 +15,8 @@ White = (255, 255, 255)
 
 # player settings
 Player_Colour = (255, 255, 0)
+
+# font settings
+Title_Text_Size = 35
+Start_Text_Size = 30
+Start_Font = 'arial black'

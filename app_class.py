@@ -52,6 +52,15 @@ def menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst
                 sys.exit()
 
 
+def draw_text(sentence, scrn, pos, size, colour, font_name):
+    font = pygame.font.SysFont(font_name, size)
+    text = font. render(sentence, False, colour)
+    text_size = text.get_size()
+    pos[0] = pos[0]-text_size[0]//2
+    pos[1] = pos[1] - text_size[1] // 2
+    scrn.blit(text, pos)
+
+
 class App:
     def __init__(self):
         self.running = True
@@ -139,6 +148,9 @@ class App:
         self.screen.blit(self.maze, (Gap // 2, Gap // 2))
         self.draw_coins()
         self.player.draw()
+        draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [130, 15], 18, White,
+                  Start_Font)
+        draw_text('HIGH SCORE: 0', self.screen, [width // 2 + 150, 15], 18, White, Start_Font)
 
         pygame.display.update()
 
