@@ -14,6 +14,7 @@ class Player:
         self.stored_direction = None
         self.able_to_move = True
         self.speed = 2
+        self.lives = 3
 
     def get_pix_pos(self):
         return vec((self.grid_pos.x * self.app.cell_width) + Gap // 2 + self.app.cell_width // 2,
@@ -22,6 +23,9 @@ class Player:
     def draw(self):
         pygame.draw.circle(self.app.screen, Player_Colour, (int(self.pix_pos.x), int(self.pix_pos.y)),
                            self.app.cell_width // 2 - 2)
+
+        for x in range(self.lives):
+            pygame.draw.circle(self.app.screen, Player_Colour, (40 + 30 * x, height - 15), 10)
 
         assert self.starting_pos == [1, 1]  # check that the player starts in the first grid cell
 
