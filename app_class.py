@@ -16,7 +16,8 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("assets/font.ttf", size)
 
 
-def menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst_btn_text, quit_x, quit_y):
+def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
+               quit_y):
     screen.blit(BG, (0, 0))
 
     menu_mouse_pos = pygame.mouse.get_pos()
@@ -24,7 +25,8 @@ def menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst
     menu_text = get_font(50).render(menu_name, True, "#b68f40")
     menu_rect = menu_text.get_rect(center=(305, 100))
 
-    play_button = Button(image=None, pos=(play_x, play_y), text_input="PLAY", font=get_font(30), base_color="#d7fcd4",
+    play_button = Button(image=None, pos=(play_x, play_y), text_input=play_btn_text, font=get_font(30),
+                         base_color="#d7fcd4",
                          hovering_color="White")
     instructions_button = Button(image=inst_image, pos=(inst_x, inst_y), text_input=inst_btn_text, font=get_font(30),
                                  base_color="#d7fcd4", hovering_color="White")
@@ -55,9 +57,9 @@ def menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst
 
 def draw_text(sentence, scrn, pos, size, colour, font_name):
     font = pygame.font.SysFont(font_name, size)
-    text = font. render(sentence, False, colour)
+    text = font.render(sentence, False, colour)
     text_size = text.get_size()
-    pos[0] = pos[0]-text_size[0]//2
+    pos[0] = pos[0] - text_size[0] // 2
     pos[1] = pos[1] - text_size[1] // 2
     scrn.blit(text, pos)
 
@@ -106,6 +108,7 @@ class App:
             menu_name = "Pac Trash"
             play_x = 305
             play_y = 200
+            play_btn_text = "PLAY"
             inst_x = 305
             inst_y = 350
             inst_image = None
@@ -113,7 +116,8 @@ class App:
             quit_x = 305
             quit_y = 500
 
-            menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst_btn_text, quit_x, quit_y)
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text,
+                       quit_x, quit_y)
 
             pygame.display.update()
 
@@ -122,6 +126,7 @@ class App:
             menu_name = "Instructions"
             play_x = 205
             play_y = 500
+            play_btn_text = "PLAY"
             inst_x = 305
             inst_y = 300
             inst_image = pygame.image.load("assets/Instructions.png")
@@ -129,7 +134,26 @@ class App:
             quit_x = 405
             quit_y = 500
 
-            menu_logic(self, menu_name, play_x, play_y, inst_x, inst_y, inst_image, inst_btn_text, quit_x, quit_y)
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text,
+                       quit_x, quit_y)
+
+            pygame.display.update()
+
+    def game_over_menu(self):
+        while True:
+            menu_name = "Pac Trash"
+            play_x = 305
+            play_y = 200
+            play_btn_text = "PLAY AGAIN"
+            inst_x = 305
+            inst_y = 350
+            inst_image = None
+            inst_btn_text = "INSTRUCTIONS"
+            quit_x = 305
+            quit_y = 500
+
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text,
+                       quit_x, quit_y)
 
             pygame.display.update()
 
@@ -139,6 +163,9 @@ class App:
                 self.playing_draw()
                 self.playing_events()
                 self.playing_update()
+            elif self.state == 'game over':
+                self.reset()
+                self.game_over_menu()
             else:
                 self.running = False
 
@@ -210,3 +237,21 @@ class App:
                 enemy.grid_pos = vec(enemy.starting_pos)
                 enemy.pix_pos = enemy.get_pix_pos()
                 enemy.direction *= 0
+
+    def reset(self):
+        self.player.lives = 3
+        self.player.current_score = 0
+        self.coins = []
+        self.player.grid_pos = vec(self.player.starting_pos)
+        self.player.pix_pos = self.player.get_pix_pos()
+        self.player.direction *= 0
+        for enemy in self.enemies:
+            enemy.grid_pos = vec(enemy.starting_pos)
+            enemy.pix_pos = enemy.get_pix_pos()
+            enemy.direction *= 0
+        with open("assets/walls.txt", 'r') as file:
+            for yidx, line in enumerate(file):
+                for xidx, char in enumerate(line):
+                    if char == 'C':
+                        self.coins.append(vec(xidx, yidx))
+        self.state = "playing"
