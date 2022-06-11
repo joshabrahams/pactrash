@@ -33,4 +33,5 @@ class Leaderboard:
             with open(filename, encoding="utf8") as file:
                 csv_read = csv.DictReader(file)
                 for line in csv_read:
-                    self.highest_score += int(line['score'])
+                    if int(line['score']) > self.highest_score:
+                        self.highest_score = int(line['score'])
