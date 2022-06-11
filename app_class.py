@@ -98,6 +98,8 @@ class App:
 
         self.player = Player(self, vec(self.p_pos))
         self.make_enemies()
+        self.leaderboard = Leaderboard()
+        self.leaderboard.high_score()
 
     def run(self):
         while self.running:
@@ -181,7 +183,8 @@ class App:
         self.player.draw()
         draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [130, 15], 18, White,
                   Start_Font)
-        draw_text('HIGH SCORE: {}'.format(high_score()), self.screen, [width // 2 + 150, 15], 18, White, Start_Font)
+        draw_text('HIGH SCORE: {}'.format(self.leaderboard.highest_score), self.screen, [width // 2 + 150, 15], 18,
+                  White, Start_Font)
         for enemy in self.enemies:
             enemy.draw()
 
@@ -229,8 +232,7 @@ class App:
     def remove_life(self):
         self.player.lives -= 1
         if self.player.lives == 0:
-            leaderboard("Josh", self.player.current_score)
-            high_score()
+            add_score("Josh", self.player.current_score)
             self.state = "game over"
         else:
             self.player.grid_pos = vec(self.player.starting_pos)
