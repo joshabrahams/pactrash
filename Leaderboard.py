@@ -15,3 +15,7 @@ def leaderboard(player_name, player_score):
             writer = csv.DictWriter(file, fieldnames=column_names)
             writer.writeheader()
             writer.writerows(rows)
+    else:
+        with open(filename, 'a', encoding='UTF8') as file:
+            writer = csv.DictWriter(file, fieldnames=column_names)
+            writer.writerows(rows)
