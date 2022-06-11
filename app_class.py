@@ -2,6 +2,7 @@ import sys
 from Button import *
 from Player import *
 from Enemy import *
+from Leaderboard import *
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -228,6 +229,7 @@ class App:
     def remove_life(self):
         self.player.lives -= 1
         if self.player.lives == 0:
+            leaderboard("Josh", self.player.current_score)
             self.state = "game over"
         else:
             self.player.grid_pos = vec(self.player.starting_pos)
