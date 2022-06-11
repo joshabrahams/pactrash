@@ -19,3 +19,13 @@ def leaderboard(player_name, player_score):
         with open(filename, 'a', encoding='UTF8') as file:
             writer = csv.DictWriter(file, fieldnames=column_names)
             writer.writerows(rows)
+
+
+def high_score():
+    highest_score = 0
+    with open(filename, encoding="utf8") as file:
+        csv_read = csv.DictReader(file)
+        for line in csv_read:
+            highest_score += int(line['score'])
+
+    print(highest_score)

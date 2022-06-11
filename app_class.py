@@ -181,7 +181,7 @@ class App:
         self.player.draw()
         draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [130, 15], 18, White,
                   Start_Font)
-        draw_text('HIGH SCORE: 0', self.screen, [width // 2 + 150, 15], 18, White, Start_Font)
+        draw_text('HIGH SCORE: {}'.format(high_score()), self.screen, [width // 2 + 150, 15], 18, White, Start_Font)
         for enemy in self.enemies:
             enemy.draw()
 
@@ -230,6 +230,7 @@ class App:
         self.player.lives -= 1
         if self.player.lives == 0:
             leaderboard("Josh", self.player.current_score)
+            high_score()
             self.state = "game over"
         else:
             self.player.grid_pos = vec(self.player.starting_pos)
