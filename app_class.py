@@ -197,11 +197,11 @@ class App:
 
     def draw_coins(self):
         x = 0
+        image = pygame.image.load("assets/full_trash_bin_15.png")
         for coin in self.coins:
             x = x + 1
-            pygame.draw.circle(self.screen, (124, 123, 7), (
-                int(coin.x * self.cell_width) + self.cell_width // 2 + Gap // 2,
-                int(coin.y * self.cell_height) + self.cell_height // 2 + Gap // 2), 5)
+            screen.blit(image, (int(coin.x * self.cell_width) + self.cell_width // 2 + Gap // 2 - 7.5,
+                                               int(coin.y * self.cell_height) + self.cell_height // 2 + Gap // 2 - 7.5))
 
         if self.player.stored_direction is None and self.player.grid_pos == [1, 1]:
             assert x == 287
@@ -356,3 +356,5 @@ class App:
             # display.flip() will update only a portion of the
             # screen to updated, not full area
             pygame.display.flip()
+
+            self.clock.tick(60)
