@@ -25,13 +25,13 @@ class Enemy:
 
     def set_colour(self):
         if self.number == 0:
-            return 43, 78, 203
+            return pygame.image.load("assets/blue_monster_4_20.png")
         if self.number == 1:
-            return 197, 200, 27
+            return pygame.image.load("assets/purple_monster_20.png")
         if self.number == 2:
-            return 189, 29, 29
+            return pygame.image.load("assets/green_monster_20.png")
         if self.number == 3:
-            return 215, 159, 33
+            return pygame.image.load("assets/gray_monster_20.png")
 
     def set_personality(self):
         if self.number == 0:
@@ -44,7 +44,7 @@ class Enemy:
             return "scared"
 
     def draw(self):
-        pygame.draw.circle(self.app.screen, self.colour, (int(self.pix_pos.x), int(self.pix_pos.y)), self.radius)
+        self.app.screen.blit(self.colour, (int(self.pix_pos.x)-10, int(self.pix_pos.y)-10))
 
     def set_target(self):
         if self.personality == "speedy" or self.personality == "slow":
