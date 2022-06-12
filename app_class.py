@@ -237,7 +237,7 @@ class App:
     def remove_life(self):
         self.player.lives -= 1
         if self.player.lives == 0:
-            add_score("Josh", self.player.current_score)
+            add_score(self.player_name, self.player.current_score)
             self.state = "game over"
         else:
             self.player.grid_pos = vec(self.player.starting_pos)
