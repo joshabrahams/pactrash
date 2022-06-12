@@ -186,6 +186,8 @@ class App:
         self.player.draw()
         draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [130, 15], 18, White,
                   Start_Font)
+        draw_text('PLAYER: {}'.format(self.player_name), self.screen, [400, 655], 18, White,
+                  Start_Font)
         draw_text('HIGH SCORE: {}'.format(self.leaderboard.highest_score), self.screen, [width // 2 + 150, 15], 18,
                   White, Start_Font)
         for enemy in self.enemies:
@@ -300,7 +302,6 @@ class App:
                         active = True
                     elif button_rect.collidepoint(event.pos):
                         self.player_name = user_text
-                        print(self.player_name)
                         self.main_menu()
                     else:
                         active = False
@@ -317,8 +318,6 @@ class App:
                     # formation
                     else:
                         user_text += event.unicode
-
-                    print(user_text)
 
             # it will set background color of screen
             screen.fill((255, 255, 255))
