@@ -80,6 +80,8 @@ class App:
         self.e_pos = []
         self.p_pos = 0
         self.enemies = []
+        self.font = pygame.font.SysFont('Arial', 25)
+        self.player_name = "Unknown"
 
         with open("assets/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
@@ -104,7 +106,8 @@ class App:
     def run(self):
         while self.running:
             if self.state == 'start':
-                self.main_menu()
+                self.login_player_name_screen()
+                # self.main_menu()
 
     def main_menu(self):
         while True:
@@ -260,3 +263,97 @@ class App:
                     if char == 'C':
                         self.coins.append(vec(xidx, yidx))
         self.state = "playing"
+
+    def login_player_name_screen(self):
+
+        base_font = pygame.font.Font(None, 32)
+        user_text = ''
+
+        input_player_name_rect = pygame.Rect(200, 200, 140, 32)
+
+        button_rect = pygame.Rect(200, 400, 140, 32)
+
+        # color_active stores color(lightskyblue3) which
+        # gets active when input box is clicked by user
+        input_color_active = pygame.Color('lightskyblue3')
+        button_color_active = pygame.Color('forestgreen')
+
+        # color_passive store color(chartreuse4) which is
+        # color of input box.
+        input_color_passive = pygame.Color('chartreuse4')
+        input_color = input_color_passive
+        button_color_passive = pygame.Color('gainsboro')
+        button_color = button_color_passive
+
+        active = False
+
+        while True:
+            for event in pygame.event.get():
+
+                # if user types QUIT then the screen will close
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if input_player_name_rect.collidepoint(event.pos):
+                        active = True
+                    elif button_rect.collidepoint(event.pos):
+                        self.player_name = user_text
+                        print(self.player_name)
+                        self.main_menu()
+                    else:
+                        active = False
+
+                if event.type == pygame.KEYDOWN:
+
+                    # Check for backspace
+                    if event.key == pygame.K_BACKSPACE:
+
+                        # get text input from 0 to -1 i.e. end.
+                        user_text = user_text[:-1]
+
+                    # Unicode standard is used for string
+                    # formation
+                    else:
+                        user_text += event.unicode
+
+                    print(user_text)
+
+            # it will set background color of screen
+            screen.fill((255, 255, 255))
+
+            if active:
+                input_color = input_color_active
+                button_color = button_color_active
+            else:
+                input_color = input_color_passive
+                button_color = button_color_passive
+
+            # draw rectangle and argument passed which should
+            # be on screen
+
+            draw_text('PacMan Login', self.screen, [300, 55], 24, Black,
+                      Start_Font)
+
+            draw_text('Enter Your Player Name:', self.screen, [200, 180], 18, Black,
+                      Start_Font)
+
+            pygame.draw.rect(screen, input_color, input_player_name_rect)
+            pygame.draw.rect(screen, button_color, button_rect)
+
+            text_surface = base_font.render(user_text, True, (255, 255, 255))
+
+            self.screen.blit(self.font.render('Next >>', True, (255, 0, 0)), (230, 400))
+            pygame.display.update()
+
+            # render at position stated in arguments
+            screen.blit(text_surface, (input_player_name_rect.x + 5, input_player_name_rect.y + 5))
+
+            # set width of textfield so that text cannot get
+            # outside of user's text input
+            input_player_name_rect.w = max(100, text_surface.get_width() + 10)
+
+            # display.flip() will update only a portion of the
+            # screen to updated, not full area
+            pygame.display.flip()
