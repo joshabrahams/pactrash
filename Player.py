@@ -22,11 +22,11 @@ class Player:
                    (self.grid_pos.y * self.app.cell_height) + Gap // 2 + self.app.cell_height // 2)
 
     def draw(self):
-        pygame.draw.circle(self.app.screen, Player_Colour, (int(self.pix_pos.x), int(self.pix_pos.y)),
-                           self.app.cell_width // 2 - 2)
+        image = pygame.image.load("assets/pacman_20.png")
+        self.app.screen.blit(image, (int(self.pix_pos.x) - 10, int(self.pix_pos.y) - 10))
 
         for x in range(self.lives):
-            pygame.draw.circle(self.app.screen, Player_Colour, (40 + 30 * x, height - 15), 10)
+            self.app.screen.blit(image, (40 + 30 * x, height - 25))
 
         assert self.starting_pos == [1, 1]  # check that the player starts in the first grid cell
 
