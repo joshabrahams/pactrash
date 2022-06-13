@@ -1,4 +1,5 @@
 import sys
+import collections
 from Button import *
 from Player import *
 from Enemy import *
@@ -11,6 +12,7 @@ screen = pygame.display.set_mode((610, 670))
 pygame.display.set_caption("PacMan")
 
 BG = pygame.image.load("assets/Background.png")
+LB = pygame.image.load("assets/leaderboard_background.png")
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -103,11 +105,25 @@ class App:
         self.leaderboard = Leaderboard()
         self.leaderboard.high_score()
 
+        self.sortlist = []
+
+        with open("assets/leaderboard.csv", "r") as file:
+            reader = csv.reader(file)
+            next(reader, None)
+
+            for i in reader:
+                self.sortlist.append(i)
+
+            def sort_second(val):
+                return int(val[1])
+
+            self.sortlist.sort(key=sort_second, reverse=True)
+
     def run(self):
         while self.running:
             if self.state == 'start':
-                self.login_player_name_screen()
-                # self.main_menu()
+                self.leaderboard_screen()
+                # self.login_player_name_screen()
 
     def main_menu(self):
         while True:
@@ -352,6 +368,67 @@ class App:
             # set width of textfield so that text cannot get
             # outside of user's text input
             input_player_name_rect.w = max(100, text_surface.get_width() + 10)
+
+            # display.flip() will update only a portion of the
+            # screen to updated, not full area
+            pygame.display.flip()
+
+            self.clock.tick(60)
+
+    def leaderboard_screen(self):
+
+        base_font = pygame.font.Font(None, 32)
+        user_text = ''
+
+        while True:
+            for event in pygame.event.get():
+
+                # if user types QUIT then the screen will close
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+
+                    # Check for backspace
+                    if event.key == pygame.K_BACKSPACE:
+
+                        # get text input from 0 to -1 i.e. end.
+                        user_text = user_text[:-1]
+
+                    # Unicode standard is used for string
+                    # formation
+                    else:
+                        user_text += event.unicode
+
+            # it will set background color of screen
+            screen.blit(LB, (0, 0))
+
+            draw_text('LEADERBOARD', self.screen, [300, 30], 40, (0, 238, 238),
+                      Start_Font)
+
+            y = 130
+            z = 1
+            for line in self.sortlist:
+                draw_text('RANK', self.screen, [100, 80], 35, (255, 255, 255),
+                          Start_Font)
+                draw_text('NAME', self.screen, [300, 80], 35, (255, 255, 255),
+                          Start_Font)
+                draw_text('SCORE', self.screen, [500, 80], 35, (255, 255, 255),
+                          Start_Font)
+                draw_text(str(z), self.screen, [100, y], 25, (255, 255, 255),
+                          Start_Font)
+                draw_text(line[0], self.screen, [300, y], 25, (255, 255, 255),
+                          Start_Font)
+                draw_text(line[1], self.screen, [500, y], 25, (255, 255, 255),
+                          Start_Font)
+                y += 40
+                z += 1
+
+            text_surface = base_font.render(user_text, True, (255, 255, 255))
+
+            self.screen.blit(self.font.render('NEXT', True, (255, 0, 0)), (500, 600))
+            pygame.display.update()
 
             # display.flip() will update only a portion of the
             # screen to updated, not full area

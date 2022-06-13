@@ -24,9 +24,11 @@ def add_score(player_name, player_score):
                 file.close()
 
 
+
 class Leaderboard:
     def __init__(self):
         self.highest_score = 0
+        self.leaderboard_sorted = []
 
     def high_score(self):
         if os.path.exists(filename):
