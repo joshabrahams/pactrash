@@ -24,7 +24,6 @@ def add_score(player_name, player_score):
                 file.close()
 
 
-
 class Leaderboard:
     def __init__(self):
         self.highest_score = 0

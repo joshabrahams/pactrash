@@ -9,7 +9,7 @@ pygame.init()
 vec = pygame.math.Vector2
 
 screen = pygame.display.set_mode((610, 670))
-pygame.display.set_caption("PacMan")
+pygame.display.set_caption("Pac Trash")
 
 BG = pygame.image.load("assets/Background.png")
 LB = pygame.image.load("assets/leaderboard_background.png")
@@ -20,13 +20,13 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 
 def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
-               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text):
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10):
     screen.blit(BG, (0, 0))
 
     menu_mouse_pos = pygame.mouse.get_pos()
 
-    menu_text = get_font(50).render(menu_name, True, "#b68f40")
-    menu_rect = menu_text.get_rect(center=(305, 100))
+    menu_text = get_font(40).render(menu_name, True, "#b68f40")
+    menu_rect = menu_text.get_rect(center=(305, 50))
 
     play_button = Button(image=None, pos=(play_x, play_y), text_input=play_btn_text, font=get_font(30),
                          base_color="#d7fcd4",
@@ -41,6 +41,26 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
                          hovering_color="White")
 
     screen.blit(menu_text, menu_rect)
+
+    if top10:
+        col_header = 85
+        row_pos = 130
+        z = 1
+        for line in self.sortlist:
+            draw_text('RANK', self.screen, [100, col_header], 35, (255, 255, 255),
+                      Start_Font)
+            draw_text('NAME', self.screen, [300, col_header], 35, (255, 255, 255),
+                      Start_Font)
+            draw_text('SCORE', self.screen, [500, col_header], 35, (255, 255, 255),
+                      Start_Font)
+            draw_text(str(z), self.screen, [100, row_pos], 25, (255, 255, 255),
+                      Start_Font)
+            draw_text(line[0], self.screen, [300, row_pos], 25, (255, 255, 255),
+                      Start_Font)
+            draw_text(line[1], self.screen, [500, row_pos], 25, (255, 255, 255),
+                      Start_Font)
+            row_pos += 40
+            z += 1
 
     for btn in [play_button, instructions_button, leaderboard_button, quit_button, back_button]:
         btn.change_color(menu_mouse_pos)
@@ -58,7 +78,8 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
                 self.instructions_menu()
                 # add instructions
             if leaderboard_button.check_for_input(menu_mouse_pos):
-                self.leaderboard_screen()
+                self.top10_menu()
+                # self.leaderboard_screen()
             if quit_button.check_for_input(menu_mouse_pos):
                 pygame.quit()
                 sys.exit()
@@ -120,12 +141,13 @@ class App:
             next(reader, None)
 
             for i in reader:
-                self.sortlist.append(i)
+                if len(i) != 0:
+                    self.sortlist.append(i)
 
             def sort_second(val):
                 return int(val[1])
 
-            self.sortlist.sort(key=sort_second, reverse=True)
+            self.sortlist = sorted(self.sortlist, key=sort_second, reverse=True)[:10]
 
     def run(self):
         while self.running:
@@ -150,9 +172,10 @@ class App:
             back_x = 600
             back_y = 650
             back_btn_text = ""
+            top10 = False
 
             menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
-               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text)
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10)
 
             pygame.display.update()
 
@@ -174,12 +197,37 @@ class App:
             back_x = 400
             back_y = 500
             back_btn_text = "BACK"
+            top10 = False
 
             menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
-               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text)
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10)
 
             pygame.display.update()
 
+    def top10_menu(self):
+        while True:
+            menu_name = "LEADERBOARD"
+            play_x = 200
+            play_y = 530
+            play_btn_text = "PLAY"
+            inst_x = 305
+            inst_y = 300
+            inst_image = None
+            inst_btn_text = ""
+            quit_x = 530
+            quit_y = 640
+            lead_x = 305
+            lead_y = 300
+            lead_btn_text = ""
+            back_x = 400
+            back_y = 530
+            back_btn_text = "BACK"
+            top10 = True
+
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10)
+
+            pygame.display.update()
 
     def game_over_menu(self):
         while True:
@@ -199,9 +247,10 @@ class App:
             back_x = 600
             back_y = 650
             back_btn_text = ""
+            top10 = False
 
             menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
-                       quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text)
+                       quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10)
 
             pygame.display.update()
 
@@ -374,7 +423,7 @@ class App:
             # draw rectangle and argument passed which should
             # be on screen
 
-            draw_text('PacMan Login', self.screen, [300, 55], 24, Black,
+            draw_text('Pac Trash Login', self.screen, [300, 55], 24, Black,
                       Start_Font)
 
             draw_text('Enter Your Player Name:', self.screen, [200, 180], 18, Black,
@@ -401,63 +450,3 @@ class App:
 
             self.clock.tick(60)
 
-    def leaderboard_screen(self):
-
-
-        base_font = pygame.font.Font(None, 32)
-        user_text = ''
-
-        while True:
-            for event in pygame.event.get():
-
-                # if user types QUIT then the screen will close
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-                if event.type == pygame.KEYDOWN:
-
-                    # Check for backspace
-                    if event.key == pygame.K_BACKSPACE:
-
-                        # get text input from 0 to -1 i.e. end.
-                        user_text = user_text[:-1]
-
-                    # Unicode standard is used for string
-                    # formation
-                    else:
-                        user_text += event.unicode
-
-            # it will set background color of screen
-            screen.blit(LB, (0, 0))
-
-            draw_text('LEADERBOARD', self.screen, [300, 30], 40, (0, 238, 238),
-                      Start_Font)
-
-            y = 130
-            z = 1
-            for line in self.sortlist:
-                draw_text('RANK', self.screen, [100, 80], 35, (255, 255, 255),
-                          Start_Font)
-                draw_text('NAME', self.screen, [300, 80], 35, (255, 255, 255),
-                          Start_Font)
-                draw_text('SCORE', self.screen, [500, 80], 35, (255, 255, 255),
-                          Start_Font)
-                draw_text(str(z), self.screen, [100, y], 25, (255, 255, 255),
-                          Start_Font)
-                draw_text(line[0], self.screen, [300, y], 25, (255, 255, 255),
-                          Start_Font)
-                draw_text(line[1], self.screen, [500, y], 25, (255, 255, 255),
-                          Start_Font)
-                y += 40
-                z += 1
-
-            text_surface = base_font.render(user_text, True, (255, 255, 255))
-
-            pygame.display.update()
-
-            # display.flip() will update only a portion of the
-            # screen to updated, not full area
-            pygame.display.flip()
-
-            self.clock.tick(60)
