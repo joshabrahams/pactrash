@@ -20,7 +20,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 
 def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
-               quit_y):
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text):
     screen.blit(BG, (0, 0))
 
     menu_mouse_pos = pygame.mouse.get_pos()
@@ -33,12 +33,16 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
                          hovering_color="White")
     instructions_button = Button(image=inst_image, pos=(inst_x, inst_y), text_input=inst_btn_text, font=get_font(30),
                                  base_color="#d7fcd4", hovering_color="White")
-    quit_button = Button(image=None, pos=(quit_x, quit_y), text_input="QUIT", font=get_font(30), base_color="#d7fcd4",
+    leaderboard_button = Button(image=None, pos=(lead_x, lead_y), text_input=lead_btn_text, font=get_font(30),
+                                 base_color="#d7fcd4", hovering_color="White")
+    quit_button = Button(image=None, pos=(quit_x, quit_y), text_input="QUIT", font=get_font(30), base_color=(255,48,48),
+                         hovering_color="White")
+    back_button = Button(image=None, pos=(back_x, back_y), text_input=back_btn_text, font=get_font(30), base_color="#d7fcd4",
                          hovering_color="White")
 
     screen.blit(menu_text, menu_rect)
 
-    for btn in [play_button, instructions_button, quit_button]:
+    for btn in [play_button, instructions_button, leaderboard_button, quit_button, back_button]:
         btn.change_color(menu_mouse_pos)
         btn.update(screen)
 
@@ -53,9 +57,13 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
             if instructions_button.check_for_input(menu_mouse_pos):
                 self.instructions_menu()
                 # add instructions
+            if leaderboard_button.check_for_input(menu_mouse_pos):
+                self.leaderboard_screen()
             if quit_button.check_for_input(menu_mouse_pos):
                 pygame.quit()
                 sys.exit()
+            if back_button.check_for_input(menu_mouse_pos):
+                self.main_menu()
 
 
 def draw_text(sentence, scrn, pos, size, colour, font_name):
@@ -122,8 +130,7 @@ class App:
     def run(self):
         while self.running:
             if self.state == 'start':
-                self.leaderboard_screen()
-                # self.login_player_name_screen()
+                self.login_player_name_screen()
 
     def main_menu(self):
         while True:
@@ -135,31 +142,44 @@ class App:
             inst_y = 350
             inst_image = None
             inst_btn_text = "INSTRUCTIONS"
-            quit_x = 305
-            quit_y = 500
+            quit_x = 530
+            quit_y = 640
+            lead_btn_text = "LEADERBOARD"
+            lead_x = 305
+            lead_y = 500
+            back_x = 600
+            back_y = 650
+            back_btn_text = ""
 
-            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text,
-                       quit_x, quit_y)
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text)
 
             pygame.display.update()
 
     def instructions_menu(self):
         while True:
             menu_name = "Instructions"
-            play_x = 205
+            play_x = 200
             play_y = 500
             play_btn_text = "PLAY"
             inst_x = 305
             inst_y = 300
             inst_image = pygame.image.load("assets/Instructions.png")
             inst_btn_text = ""
-            quit_x = 405
-            quit_y = 500
+            quit_x = 530
+            quit_y = 640
+            lead_x = 305
+            lead_y = 300
+            lead_btn_text = ""
+            back_x = 400
+            back_y = 500
+            back_btn_text = "BACK"
 
-            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text,
-                       quit_x, quit_y)
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text)
 
             pygame.display.update()
+
 
     def game_over_menu(self):
         while True:
@@ -173,9 +193,15 @@ class App:
             inst_btn_text = "INSTRUCTIONS"
             quit_x = 305
             quit_y = 500
+            lead_x = 305
+            lead_y = 300
+            lead_btn_text = ""
+            back_x = 600
+            back_y = 650
+            back_btn_text = ""
 
-            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text,
-                       quit_x, quit_y)
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
+                       quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text)
 
             pygame.display.update()
 
@@ -377,6 +403,7 @@ class App:
 
     def leaderboard_screen(self):
 
+
         base_font = pygame.font.Font(None, 32)
         user_text = ''
 
@@ -427,7 +454,6 @@ class App:
 
             text_surface = base_font.render(user_text, True, (255, 255, 255))
 
-            self.screen.blit(self.font.render('NEXT', True, (255, 0, 0)), (500, 600))
             pygame.display.update()
 
             # display.flip() will update only a portion of the
