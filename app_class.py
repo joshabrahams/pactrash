@@ -141,7 +141,8 @@ class App:
             next(reader, None)
 
             for i in reader:
-                if len(i) != 0:
+                print(len(i))
+                if len(i) != 0 and len(i) == 2:
                     self.sortlist.append(i)
 
             def sort_second(val):
@@ -254,6 +255,31 @@ class App:
 
             pygame.display.update()
 
+    def winner_menu(self):
+        while True:
+            menu_name = "Winner"
+            play_x = 200
+            play_y = 500
+            play_btn_text = "PLAY"
+            inst_x = 305
+            inst_y = 300
+            inst_image = pygame.image.load("assets/Instructions.png")
+            inst_btn_text = ""
+            quit_x = 530
+            quit_y = 640
+            lead_x = 305
+            lead_y = 300
+            lead_btn_text = ""
+            back_x = 400
+            back_y = 500
+            back_btn_text = "BACK"
+            top10 = False
+
+            menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
+               quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10)
+
+            pygame.display.update()
+
     def play(self):
         while self.running:
             if self.state == 'playing':
@@ -320,6 +346,10 @@ class App:
         for enemy in self.enemies:
             if enemy.grid_pos == self.player.grid_pos:
                 self.remove_life()
+
+        if self.player.winner == "winner":
+            add_score(self.player_name, self.player.current_score * self.player.lives)
+            self.winner_menu()
 
     def make_enemies(self):
         for idx, pos in enumerate(self.e_pos):

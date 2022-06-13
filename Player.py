@@ -16,6 +16,7 @@ class Player:
         self.speed = 2
         self.lives = 3
         self.current_score = 0
+        self.winner = ""
 
     def get_pix_pos(self):
         return vec((self.grid_pos.x * self.app.cell_width) + Gap // 2 + self.app.cell_width // 2,
@@ -78,3 +79,8 @@ class Player:
     def eat_rubbish(self):
         self.app.coins.remove(self.grid_pos)
         self.current_score += 1
+        if len(self.app.coins) == 0:
+            self.winner = "winner"
+
+
+
