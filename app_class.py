@@ -1,5 +1,7 @@
+# This module drives the game play
+# Author: Josh Abrahams
+
 import sys
-import collections
 from Button import *
 from Player import *
 from Enemy import *
@@ -11,14 +13,17 @@ vec = pygame.math.Vector2
 screen = pygame.display.set_mode((610, 670))
 pygame.display.set_caption("Pac Trash")
 
+# set background images
 BG = pygame.image.load("assets/Background.png")
 LB = pygame.image.load("assets/leaderboard_background.png")
+SB = pygame.image.load("assets/login_background.png")
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("assets/font.ttf", size)
 
 
+# Reusable logic for defining each menu screen
 def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
                quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10):
     screen.blit(BG, (0, 0))
@@ -42,6 +47,7 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
 
     screen.blit(menu_text, menu_rect)
 
+    # returns the top 10 leaderboard scores for the leaderboard menu screen
     if top10:
         col_header = 85
         row_pos = 130
@@ -62,10 +68,12 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
             row_pos += 40
             z += 1
 
+    # Sets the behaviour for each button
     for btn in [play_button, instructions_button, leaderboard_button, quit_button, back_button]:
         btn.change_color(menu_mouse_pos)
         btn.update(screen)
 
+    # Defines the click action for each button
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -86,7 +94,7 @@ def menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, i
             if back_button.check_for_input(menu_mouse_pos):
                 self.main_menu()
 
-
+# A function to draw onto the screen
 def draw_text(sentence, scrn, pos, size, colour, font_name):
     font = pygame.font.SysFont(font_name, size)
     text = font.render(sentence, False, colour)
@@ -114,6 +122,7 @@ class App:
         self.font = pygame.font.SysFont('Arial', 25)
         self.player_name = "Unknown"
 
+        # Creates the maze on the screen
         with open("assets/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
@@ -136,12 +145,12 @@ class App:
 
         self.sortlist = []
 
+        # loads the leaderboard data into an array
         with open("assets/leaderboard.csv", "r") as file:
             reader = csv.reader(file)
             next(reader, None)
 
             for i in reader:
-                print(len(i))
                 if len(i) != 0 and len(i) == 2:
                     self.sortlist.append(i)
 
@@ -150,26 +159,28 @@ class App:
 
             self.sortlist = sorted(self.sortlist, key=sort_second, reverse=True)[:10]
 
+    # Captures the game start event and sends the user to the login screen
     def run(self):
         while self.running:
             if self.state == 'start':
                 self.login_player_name_screen()
 
+    # defines the button and text position on the main menu screen
     def main_menu(self):
         while True:
             menu_name = "Pac Trash"
             play_x = 305
-            play_y = 200
+            play_y = 150
             play_btn_text = "PLAY"
             inst_x = 305
-            inst_y = 350
+            inst_y = 300
             inst_image = None
             inst_btn_text = "INSTRUCTIONS"
             quit_x = 530
             quit_y = 640
             lead_btn_text = "LEADERBOARD"
             lead_x = 305
-            lead_y = 500
+            lead_y = 450
             back_x = 600
             back_y = 650
             back_btn_text = ""
@@ -180,6 +191,7 @@ class App:
 
             pygame.display.update()
 
+    # defines the button and text position on the instructions screen
     def instructions_menu(self):
         while True:
             menu_name = "Instructions"
@@ -205,6 +217,7 @@ class App:
 
             pygame.display.update()
 
+    # defines the button and text position on the leaderboard screen
     def top10_menu(self):
         while True:
             menu_name = "LEADERBOARD"
@@ -230,9 +243,10 @@ class App:
 
             pygame.display.update()
 
+    # defines the button and text position on the game over screen
     def game_over_menu(self):
         while True:
-            menu_name = "Pac Trash"
+            menu_name = "GAME OVER"
             play_x = 305
             play_y = 200
             play_btn_text = "PLAY AGAIN"
@@ -250,20 +264,22 @@ class App:
             back_btn_text = ""
             top10 = False
 
+
             menu_logic(self, menu_name, play_x, play_y, play_btn_text, inst_x, inst_y, inst_image, inst_btn_text, quit_x,
                        quit_y, lead_btn_text, lead_x, lead_y, back_x, back_y, back_btn_text, top10)
 
             pygame.display.update()
 
+    # defines the button and text position on the winner menu screen
     def winner_menu(self):
         while True:
             menu_name = "Winner"
             play_x = 200
-            play_y = 500
+            play_y = 520
             play_btn_text = "PLAY"
             inst_x = 305
             inst_y = 300
-            inst_image = pygame.image.load("assets/Instructions.png")
+            inst_image = pygame.image.load("assets/Winner.png")
             inst_btn_text = ""
             quit_x = 530
             quit_y = 640
@@ -271,7 +287,7 @@ class App:
             lead_y = 300
             lead_btn_text = ""
             back_x = 400
-            back_y = 500
+            back_y = 520
             back_btn_text = "BACK"
             top10 = False
 
@@ -280,6 +296,7 @@ class App:
 
             pygame.display.update()
 
+    # Creates the events for playing the game
     def play(self):
         while self.running:
             if self.state == 'playing':
@@ -296,6 +313,7 @@ class App:
         pygame.quit()
         sys.exit()
 
+    # Draws the game screen with the current score, player name and high score
     def playing_draw(self):
         self.screen.fill(Black)
         self.screen.blit(self.maze, (Gap // 2, Gap // 2))
@@ -312,6 +330,7 @@ class App:
 
         pygame.display.update()
 
+    # Draws all rubbish icons on the maze
     def draw_coins(self):
         x = 0
         image = pygame.image.load("assets/full_trash_bin_15.png")
@@ -320,10 +339,11 @@ class App:
             screen.blit(image, (int(coin.x * self.cell_width) + self.cell_width // 2 + Gap // 2 - 7.5,
                                                int(coin.y * self.cell_height) + self.cell_height // 2 + Gap // 2 - 7.5))
 
+        # tests to see that all rubbish icons were drawn on the screen
         if self.player.stored_direction is None and self.player.grid_pos == [1, 1]:
             assert x == 287
 
-    # playing functions
+    # defines the keys for moving the player sprite
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -338,29 +358,33 @@ class App:
                 if event.key == pygame.K_DOWN:
                     self.player.move(vec(0, 1))
 
+    # updates the position of the player and checks if they are in the same position as the enemy
     def playing_update(self):
         self.player.update()
         for enemy in self.enemies:
             enemy.update()
 
-        for enemy in self.enemies:
+        for enemy in self.enemies:  # if true a player life is removed
             if enemy.grid_pos == self.player.grid_pos:
                 self.remove_life()
 
-        if self.player.winner == "winner":
-            add_score(self.player_name, self.player.current_score * self.player.lives)
+        if self.player.winner == "winner":  # if player removes all rubbish icons user wins the game
+            add_score(self.player_name,
+                      self.player.current_score * self.player.lives)  # score is added up and multiplied by lives left
             self.winner_menu()
 
+    # Draws the enemies onto the screen
     def make_enemies(self):
         for idx, pos in enumerate(self.e_pos):
             self.enemies.append(Enemy(self, vec(pos), idx))
 
+    # Removes the players life
     def remove_life(self):
         self.player.lives -= 1
-        if self.player.lives == 0:
+        if self.player.lives == 0:  # if no lives remaining than end the game
             add_score(self.player_name, self.player.current_score)
             self.state = "game over"
-        else:
+        else:  # sets the player and enemies back to their starting positions
             self.player.grid_pos = vec(self.player.starting_pos)
             self.player.pix_pos = self.player.get_pix_pos()
             self.player.direction *= 0
@@ -369,6 +393,7 @@ class App:
                 enemy.pix_pos = enemy.get_pix_pos()
                 enemy.direction *= 0
 
+    # Resets the entire game screen so the player can play again
     def reset(self):
         self.player.lives = 3
         self.player.current_score = 0
@@ -387,14 +412,15 @@ class App:
                         self.coins.append(vec(xidx, yidx))
         self.state = "playing"
 
+    # defines the login screen
     def login_player_name_screen(self):
 
-        base_font = pygame.font.Font(None, 32)
+        base_font = pygame.font.Font(None, 50)
         user_text = ''
 
-        input_player_name_rect = pygame.Rect(200, 200, 140, 32)
+        input_player_name_rect = pygame.Rect(155, 300, 140, 50)
 
-        button_rect = pygame.Rect(200, 400, 140, 32)
+        button_rect = pygame.Rect(230, 500, 140, 50)
 
         # color_active stores color(lightskyblue3) which
         # gets active when input box is clicked by user
@@ -441,7 +467,7 @@ class App:
                         user_text += event.unicode
 
             # it will set background color of screen
-            screen.fill((255, 255, 255))
+            screen.blit(SB, (0, 0))
 
             if active:
                 input_color = input_color_active
@@ -453,18 +479,18 @@ class App:
             # draw rectangle and argument passed which should
             # be on screen
 
-            draw_text('Pac Trash Login', self.screen, [300, 55], 24, Black,
+            draw_text('LOGIN', self.screen, [305, 70], 50, White,
                       Start_Font)
 
-            draw_text('Enter Your Player Name:', self.screen, [200, 180], 18, Black,
+            draw_text('PLAYER NAME', self.screen, [305, 270], 30, White,
                       Start_Font)
 
-            pygame.draw.rect(screen, input_color, input_player_name_rect)
+            pygame.draw.rect(screen, button_color, input_player_name_rect)
             pygame.draw.rect(screen, button_color, button_rect)
 
-            text_surface = base_font.render(user_text, True, (255, 255, 255))
+            text_surface = base_font.render(user_text, True, (0, 0, 0))
 
-            self.screen.blit(self.font.render('Next >>', True, (255, 0, 0)), (230, 400))
+            self.screen.blit(self.font.render('ENTER', True, (0, 0, 0)), (260, 510))
             pygame.display.update()
 
             # render at position stated in arguments
@@ -472,7 +498,7 @@ class App:
 
             # set width of textfield so that text cannot get
             # outside of user's text input
-            input_player_name_rect.w = max(100, text_surface.get_width() + 10)
+            input_player_name_rect.w = max(300, text_surface.get_width() + 10)
 
             # display.flip() will update only a portion of the
             # screen to updated, not full area
